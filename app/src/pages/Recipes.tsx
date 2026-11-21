@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth'
 import { supabase } from '../lib/supabase'
+import { signedUrls } from '../lib/photos'
 import { Ln } from '../components/Icon'
 import RecipeCard, { type CardRecipe } from '../components/RecipeCard'
 
@@ -23,6 +24,7 @@ export default function Recipes() {
   const userId = session!.user.id
   const [rows, setRows] = useState<CardRecipe[] | null>(null)
   const [favs, setFavs] = useState<Set<string>>(new Set())
+  const [covers, setCovers] = useState<Record<string, string>>({}) // id de receta -> URL firmada
   const [error, setError] = useState<string | null>(null)
   const [q, setQ] = useState('')
   const [filter, setFilter] = useState<string>('todas') // 'todas' | 'favoritas' | nombre de etiqueta
@@ -50,6 +52,19 @@ export default function Recipes() {
             ingredientNames: r.recipe_ingredients.flatMap((i) => (i.ingredients ? [i.ingredients.name] : [])),
           })),
         )
+      })
+    supabase
+      .from('recipe_images')
+      .select('recipe_id,storage_path')
+      .eq('is_cover', true)
+      .then(async ({ data }) => {
+        const list = data ?? []
+        try {
+          const signed = await signedUrls(list.map((c) => c.storage_path as string))
+          setCovers(Object.fromEntries(list.map((c) => [c.recipe_id as string, signed[c.storage_path as string]]).filter(([, u]) => u)))
+        } catch {
+          /* sin portadas: se muestran las ilustraciones */
+        }
       })
     supabase
       .from('user_favorites')
@@ -135,7 +150,7 @@ export default function Recipes() {
       <ul className="cards">
         {visible.map((r) => (
           <li key={r.id}>
-            <RecipeCard recipe={r} favorite={favs.has(r.id)} onToggleFavorite={toggleFavorite} />
+            <RecipeCard recipe={r} favorite={favs.has(r.id)} coverUrl={covers[r.id]} onToggleFavorite={toggleFavorite} />
           </li>
         ))}
       </ul>

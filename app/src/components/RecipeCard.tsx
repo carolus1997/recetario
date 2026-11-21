@@ -17,18 +17,23 @@ export interface CardRecipe {
 interface Props {
   recipe: CardRecipe
   favorite: boolean
+  coverUrl?: string
   onToggleFavorite: (id: string) => void
 }
 
-export default function RecipeCard({ recipe, favorite, onToggleFavorite }: Props) {
+export default function RecipeCard({ recipe, favorite, coverUrl, onToggleFavorite }: Props) {
   const total = (recipe.prep_minutes ?? 0) + (recipe.cook_minutes ?? 0)
   return (
     <article className="card">
       {recipe.parent_recipe_id && <span className="ribbon">Variante</span>}
       <div className="pic">
-        <div className="nopic">
-          <Ill name={illustrationFor([recipe.title, ...recipe.ingredientNames])} />
-        </div>
+        {coverUrl ? (
+          <img src={coverUrl} alt="" loading="lazy" />
+        ) : (
+          <div className="nopic">
+            <Ill name={illustrationFor([recipe.title, ...recipe.ingredientNames])} />
+          </div>
+        )}
         <button
           type="button"
           className="fav"
