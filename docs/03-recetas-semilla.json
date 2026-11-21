@@ -1,0 +1,149 @@
+{
+  "format": "recetario-import/0.1",
+  "recipes": [
+    {
+      "title": "Pollo al curry con arroz",
+      "servings": 4, "prep_minutes": 15, "cook_minutes": 30, "difficulty": "facil",
+      "storage_days": 3, "freezable": true,
+      "tags": ["comida", "cena", "arroz", "pollo", "cocina asiática"],
+      "ingredients": [
+        {"ingredient": "pechuga de pollo", "qty": 600, "unit": "g"},
+        {"ingredient": "arroz basmati", "qty": 250, "unit": "g"},
+        {"ingredient": "cebolla", "qty": 1, "unit": "unidad"},
+        {"ingredient": "ajo", "qty": 2, "unit": "diente"},
+        {"ingredient": "leche de coco", "qty": 400, "unit": "ml"},
+        {"ingredient": "tomate triturado", "qty": 200, "unit": "g"},
+        {"ingredient": "curry", "qty": 1, "unit": "cucharada"},
+        {"ingredient": "cúrcuma", "qty": 1, "unit": "cucharadita"},
+        {"ingredient": "aceite de oliva", "qty": 15, "unit": "ml"},
+        {"ingredient": "sal", "qty_text": "al gusto"},
+        {"ingredient": "pimienta", "qty_text": "al gusto"},
+        {"ingredient": "cilantro fresco", "optional": true}
+      ],
+      "steps": [
+        {"text": "Cortar el pollo en dados y picar la cebolla y el ajo."},
+        {"text": "Dorar el pollo con el aceite y reservar."},
+        {"text": "Sofreír la cebolla y el ajo."},
+        {"text": "Añadir curry y cúrcuma y cocinar unos segundos."},
+        {"text": "Incorporar el tomate y la leche de coco."},
+        {"text": "Añadir de nuevo el pollo y cocinar 15 minutos.", "min": 15},
+        {"text": "Cocer el arroz aparte y servir junto al curry."}
+      ]
+    },
+    {
+      "title": "Puerros asados con mozzarella, soja y miel",
+      "variant_of": "Puerros asados con mozzarella",
+      "variant_label": "Con zanahoria, miel y soja",
+      "servings": 2, "prep_minutes": 10, "cook_minutes": 20,
+      "appliances": ["airfryer"],
+      "storage_notes": "Preferiblemente consumir recién hecha.",
+      "tags": ["cena", "vegetariana", "ligera", "airfryer", "verduras"],
+      "ingredients": [
+        {"ingredient": "puerro", "qty": 2, "unit": "unidad", "prep": "grandes"},
+        {"ingredient": "mozzarella", "qty": 125, "unit": "g"},
+        {"ingredient": "zanahoria", "qty": 2, "unit": "unidad"},
+        {"ingredient": "salsa de soja", "qty": 15, "unit": "ml"},
+        {"ingredient": "miel", "qty": 10, "unit": "g"},
+        {"ingredient": "aceite de oliva", "qty": 10, "unit": "ml"},
+        {"ingredient": "ajo en polvo", "qty": 0.5, "unit": "cucharadita"},
+        {"ingredient": "pimienta negra", "qty_text": "al gusto"}
+      ],
+      "steps": [
+        {"text": "Cortar los puerros longitudinalmente y las zanahorias en bastones."},
+        {"text": "Mezclar soja, miel, aceite, ajo y pimienta."},
+        {"text": "Pintar las verduras con la mezcla."},
+        {"text": "Cocinar en airfryer a 185 °C durante unos 15 minutos.", "temp_c": 185, "min": 15},
+        {"text": "Añadir la mozzarella troceada."},
+        {"text": "Cocinar otros 3 a 5 minutos hasta que se funda y se dore ligeramente.", "min": 3, "max": 5}
+      ]
+    },
+    {
+      "title": "Albóndigas en salsa de tomate",
+      "servings": 4, "prep_minutes": 25, "cook_minutes": 35,
+      "storage_days": 3, "freezable": true,
+      "tags": ["comida", "carne", "cocina tradicional", "batch cooking"],
+      "ingredients": [
+        {"section": "Albóndigas", "ingredient": "carne picada de ternera", "qty": 500, "unit": "g"},
+        {"section": "Albóndigas", "ingredient": "huevo", "qty": 1, "unit": "unidad"},
+        {"section": "Albóndigas", "ingredient": "pan rallado", "qty": 40, "unit": "g"},
+        {"section": "Albóndigas", "ingredient": "leche", "qty": 50, "unit": "ml"},
+        {"section": "Albóndigas", "ingredient": "ajo", "qty": 1, "unit": "diente"},
+        {"section": "Albóndigas", "ingredient": "perejil", "qty": 10, "unit": "g"},
+        {"section": "Albóndigas", "ingredient": "sal", "qty_text": "al gusto"},
+        {"section": "Albóndigas", "ingredient": "pimienta", "qty_text": "al gusto"},
+        {"section": "Salsa", "ingredient": "tomate triturado", "qty": 400, "unit": "g"},
+        {"section": "Salsa", "ingredient": "cebolla", "qty": 1, "unit": "unidad"},
+        {"section": "Salsa", "ingredient": "zanahoria", "qty": 1, "unit": "unidad"},
+        {"section": "Salsa", "ingredient": "vino tinto", "qty": 100, "unit": "ml"},
+        {"section": "Salsa", "ingredient": "aceite de oliva", "qty": 15, "unit": "ml"},
+        {"section": "Salsa", "ingredient": "laurel", "qty": 1, "unit": "hoja"},
+        {"section": "Salsa", "ingredient": "sal", "qty_text": "al gusto"}
+      ],
+      "steps": [
+        {"section": "Albóndigas", "text": "Mezclar todos los ingredientes de las albóndigas."},
+        {"section": "Albóndigas", "text": "Formar aproximadamente 20 albóndigas."},
+        {"section": "Albóndigas", "text": "Dorarlas ligeramente y reservar."},
+        {"section": "Salsa", "text": "Sofreír cebolla y zanahoria."},
+        {"section": "Salsa", "text": "Añadir el vino y dejar reducir."},
+        {"section": "Salsa", "text": "Incorporar tomate, laurel y sal."},
+        {"section": "Salsa", "text": "Cocinar 15 minutos.", "min": 15},
+        {"text": "Añadir las albóndigas a la salsa y cocinar otros 15 minutos.", "min": 15}
+      ]
+    },
+    {
+      "title": "Ensalada templada de garbanzos, espinacas y queso feta",
+      "servings": 2, "prep_minutes": 10, "cook_minutes": 10,
+      "storage_days": 2,
+      "tags": ["vegetariana", "legumbres", "comida", "cena", "rápida"],
+      "ingredients": [
+        {"ingredient": "garbanzos cocidos", "qty": 400, "unit": "g"},
+        {"ingredient": "espinacas frescas", "qty": 150, "unit": "g"},
+        {"ingredient": "tomate cherry", "qty": 100, "unit": "g"},
+        {"ingredient": "queso feta", "qty": 80, "unit": "g"},
+        {"ingredient": "cebolla morada", "qty": 0.5, "unit": "unidad"},
+        {"ingredient": "aceite de oliva", "qty": 15, "unit": "ml"},
+        {"ingredient": "zumo de limón", "qty": 10, "unit": "ml"},
+        {"ingredient": "comino", "qty": 1, "unit": "cucharadita"},
+        {"ingredient": "sal", "qty_text": "al gusto"},
+        {"ingredient": "pimienta", "qty_text": "al gusto"}
+      ],
+      "steps": [
+        {"text": "Escurrir y lavar los garbanzos."},
+        {"text": "Saltearlos con aceite y comino durante 5 minutos.", "min": 5},
+        {"text": "Añadir las espinacas y cocinar hasta que pierdan ligeramente volumen."},
+        {"text": "Mezclar con los tomates y la cebolla."},
+        {"text": "Añadir el queso feta desmenuzado."},
+        {"text": "Aliñar con limón, sal y pimienta."}
+      ]
+    },
+    {
+      "title": "Salmón al horno con patatas y verduras",
+      "servings": 4, "prep_minutes": 15, "cook_minutes": 40,
+      "appliances": ["horno"],
+      "storage_days": 2, "freezable": false,
+      "storage_notes": "No congelar una vez cocinadas las patatas.",
+      "tags": ["pescado", "comida", "cena", "horno", "plato completo"],
+      "ingredients": [
+        {"ingredient": "lomo de salmón", "qty": 4, "unit": "lomo", "alt_qty": 600, "alt_unit": "g"},
+        {"ingredient": "patata", "qty": 600, "unit": "g"},
+        {"ingredient": "calabacín", "qty": 1, "unit": "unidad"},
+        {"ingredient": "pimiento rojo", "qty": 1, "unit": "unidad"},
+        {"ingredient": "cebolla", "qty": 1, "unit": "unidad"},
+        {"ingredient": "aceite de oliva", "qty": 20, "unit": "ml"},
+        {"ingredient": "limón", "qty": 1, "unit": "unidad"},
+        {"ingredient": "eneldo", "qty": 1, "unit": "cucharadita"},
+        {"ingredient": "sal", "qty_text": "al gusto"},
+        {"ingredient": "pimienta", "qty_text": "al gusto"}
+      ],
+      "steps": [
+        {"text": "Precalentar el horno a 200 °C.", "temp_c": 200},
+        {"text": "Cortar las patatas en rodajas finas y las verduras en trozos."},
+        {"text": "Mezclar las verduras con aceite, sal y pimienta."},
+        {"text": "Hornear durante 25 minutos.", "temp_c": 200, "min": 25},
+        {"text": "Colocar encima los lomos de salmón."},
+        {"text": "Añadir limón, eneldo, sal y pimienta."},
+        {"text": "Hornear otros 12 a 15 minutos.", "temp_c": 200, "min": 12, "max": 15}
+      ]
+    }
+  ]
+}
