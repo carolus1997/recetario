@@ -12,6 +12,7 @@ export interface CardRecipe {
   parent_recipe_id: string | null
   variant_label: string | null
   tags: string[]
+  appliances: string[]
   ingredientNames: string[]
 }
 

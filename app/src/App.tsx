@@ -29,6 +29,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Recipes />} />
+          <Route path="/favoritas" element={<Recipes key="favoritas" onlyFavorites />} />
           <Route path="/nueva" element={<RecipeForm />} />
           <Route path="/receta/:id" element={<RecipeDetail />} />
           <Route path="/receta/:id/editar" element={<RecipeForm />} />
@@ -42,6 +43,10 @@ export default function App() {
         <NavLink to="/" end>
           <Ln name="b" />
           Cuaderno
+        </NavLink>
+        <NavLink to="/favoritas">
+          <Ln name="heart" />
+          Favoritas
         </NavLink>
         <NavLink to="/importar">
           <Ln name="leaf" />

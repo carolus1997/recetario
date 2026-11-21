@@ -130,6 +130,16 @@ button.add { background: transparent; color: var(--olive-d); border-style: dashe
 .linkbtn.alt { background: var(--paper-2); color: var(--ink); }
 .pagehead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 
+/* Filtros y favoritas */
+.searchrow { display: flex; align-items: flex-end; gap: 10px; }
+.searchrow .searchbox { flex: 1; }
+.filterbtn { flex: none; }
+.filter-sheet { max-height: 88%; }
+.filter-sheet .row button { flex: 1; }
+.toast { position: fixed; z-index: 45; left: 50%; transform: translateX(-50%); bottom: 84px; display: flex; align-items: center; gap: 14px;
+  padding: 6px 16px; background: var(--ink); color: var(--paper); border-radius: 999px; }
+.toast .link { color: var(--sticky); }
+
 /* Variantes */
 .variants { margin: -6px 0 14px 18px; padding-left: 12px; border-left: 3px dashed var(--clay); }
 .card.compact { margin: 10px 0; display: grid; grid-template-columns: 96px 1fr; }
