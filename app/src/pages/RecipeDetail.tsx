@@ -11,6 +11,7 @@ import {
   uploadPhoto,
   type RecipeImage,
 } from '../lib/photos'
+import { difficultyLabel } from '../lib/labels'
 import PhotoAdd from '../components/PhotoAdd'
 import PhotoViewer from '../components/PhotoViewer'
 
@@ -149,7 +150,7 @@ export default function RecipeDetail() {
   const meta = [
     recipe.prep_minutes != null && `Preparación ${recipe.prep_minutes} min`,
     recipe.cook_minutes != null && `Cocción ${recipe.cook_minutes} min`,
-    recipe.difficulty && `Dificultad ${recipe.difficulty}`,
+    recipe.difficulty && `Dificultad ${difficultyLabel(recipe.difficulty)}`,
     recipe.appliances.length > 0 && recipe.appliances.join(', '),
   ].filter(Boolean)
   const stepPhotos = (stepId: string) => recipe.recipe_images.filter((i) => i.step_id === stepId)
@@ -158,7 +159,10 @@ export default function RecipeDetail() {
   return (
     <article className="recipe">
       <Link to="/">← Recetas</Link>
-      <h1>{recipe.title}</h1>
+      <div className="pagehead">
+        <h1>{recipe.title}</h1>
+        <Link className="linkbtn alt" to={`/receta/${recipe.id}/editar`}>Editar</Link>
+      </div>
       {meta.length > 0 && <p className="muted">{meta.join(' · ')}</p>}
       <div className="chips">
         {recipe.recipe_tags.map((t) => t.tags && <span key={t.tags.name}>{t.tags.name}</span>)}

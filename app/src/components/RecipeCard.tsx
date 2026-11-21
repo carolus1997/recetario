@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Ill, Ln, illustrationFor } from './Icon'
+import { difficultyLabel } from '../lib/labels'
 
 export interface CardRecipe {
   id: string
@@ -49,7 +50,7 @@ export default function RecipeCard({ recipe, favorite, coverUrl, onToggleFavorit
           <h3>{recipe.title}</h3>
           <div className="meta">
             {total > 0 && <span><b>{total} min</b></span>}
-            {recipe.difficulty && <span>{recipe.difficulty}</span>}
+            {recipe.difficulty && <span>{difficultyLabel(recipe.difficulty)}</span>}
             {recipe.freezable === true && <span>se congela</span>}
             {recipe.freezable === false && <span>no congelar</span>}
             {recipe.variant_label && <span>{recipe.variant_label}</span>}

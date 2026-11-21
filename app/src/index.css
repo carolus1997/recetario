@@ -105,6 +105,31 @@ label { font: 400 .9rem var(--f-caps); letter-spacing: .1em; text-transform: upp
 .row { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
 section { position: relative; z-index: 1; }
 
+/* Formulario de receta */
+.recipe-form { position: relative; z-index: 1; padding-top: 8px; padding-bottom: 24px; }
+.field { display: grid; gap: 2px; margin: 10px 0; }
+.lbl { font: 400 .9rem var(--f-caps); letter-spacing: .1em; text-transform: uppercase; color: var(--clay); }
+select { font: inherit; width: 100%; min-height: var(--tap); padding: 0 6px; border: 0; border-bottom: 2px solid var(--ink);
+  background: transparent; color: var(--ink); border-radius: 0; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.chiprow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+fieldset.group { border: 2px dashed rgba(43, 42, 51, .35); border-radius: 16px; margin: 14px 0; padding: 4px 12px 12px; }
+fieldset.group legend { font: 400 1.2rem var(--f-title); color: var(--olive-d); padding: 0 6px; }
+.ing-edit { border-bottom: 1.5px dashed rgba(43, 42, 51, .3); padding-bottom: 8px; margin-bottom: 6px; }
+.ing-main { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ing-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.chip[aria-pressed='true'] { background: var(--olive); border-color: var(--olive-d); color: #fff; }
+button.add { background: transparent; color: var(--olive-d); border-style: dashed; margin: 6px 6px 6px 0; }
+.tag-add { display: flex; align-items: flex-end; gap: 10px; }
+.tag-add .field { flex: 1; }
+.formfoot { position: sticky; bottom: 70px; z-index: 5; padding: 10px 0; background: linear-gradient(transparent, var(--paper) 40%); }
+.formfoot button { width: 100%; min-height: 52px; }
+.linkbtn { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 20px; border: 2.5px solid var(--ink);
+  border-radius: var(--blob); background: var(--tomato); color: #fff; text-decoration: none; font: 400 1.15rem var(--f-hand); }
+.linkbtn.alt { background: var(--paper-2); color: var(--ink); }
+.pagehead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+
 /* Fotos */
 .cover { display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; margin: 12px 0 8px; overflow: hidden; background: var(--paper-2);
   border: 2px solid var(--ink); border-radius: 22px 16px 24px 16px / 16px 24px 16px 22px; box-shadow: 4px 5px 0 rgba(43, 42, 51, .14); }

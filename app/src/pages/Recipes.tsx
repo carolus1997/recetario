@@ -116,8 +116,13 @@ export default function Recipes() {
   const chips = ['todas', 'favoritas', ...allTags]
   return (
     <>
-      <h1><span className="u">Recetas</span></h1>
-      <p className="muted">Mi cuaderno · {rows.length} {rows.length === 1 ? 'receta' : 'recetas'}</p>
+      <div className="pagehead">
+        <div>
+          <h1><span className="u">Recetas</span></h1>
+          <p className="muted">Mi cuaderno · {rows.length} {rows.length === 1 ? 'receta' : 'recetas'}</p>
+        </div>
+        <Link className="linkbtn" to="/nueva">+ Nueva</Link>
+      </div>
       <div className="searchbox">
         <Ln name="srch" />
         <input

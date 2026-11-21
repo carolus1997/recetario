@@ -5,6 +5,7 @@ import { Ln } from './components/Icon'
 import Login from './pages/Login'
 import Recipes from './pages/Recipes'
 import RecipeDetail from './pages/RecipeDetail'
+import RecipeForm from './pages/RecipeForm'
 import ImportPage from './pages/Import'
 
 export default function App() {
@@ -27,7 +28,9 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Recipes />} />
+          <Route path="/nueva" element={<RecipeForm />} />
           <Route path="/receta/:id" element={<RecipeDetail />} />
+          <Route path="/receta/:id/editar" element={<RecipeForm />} />
           <Route path="/importar" element={<ImportPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
