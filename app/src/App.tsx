@@ -1,6 +1,7 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './auth'
 import { supabase } from './lib/supabase'
+import { Ln } from './components/Icon'
 import Login from './pages/Login'
 import Recipes from './pages/Recipes'
 import RecipeDetail from './pages/RecipeDetail'
@@ -31,9 +32,15 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-      <nav className="tabbar">
-        <NavLink to="/" end>Recetas</NavLink>
-        <NavLink to="/importar">Importar</NavLink>
+      <nav className="tabbar" aria-label="Principal">
+        <NavLink to="/" end>
+          <Ln name="b" />
+          Cuaderno
+        </NavLink>
+        <NavLink to="/importar">
+          <Ln name="leaf" />
+          Importar
+        </NavLink>
       </nav>
     </div>
   )
