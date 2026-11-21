@@ -15,8 +15,20 @@ import { difficultyLabel } from '../lib/labels'
 import PhotoAdd from '../components/PhotoAdd'
 import PhotoViewer from '../components/PhotoViewer'
 
+interface FamilyRow {
+  id: string
+  title: string
+  variant_label: string | null
+  parent_recipe_id: string | null
+}
+interface OriginalIng extends IngredientRow {
+  ingredient_id: string | null
+  ingredients: { name: string } | null
+}
+
 interface Ing extends IngredientRow {
   id: string
+  ingredient_id: string | null
   position: number
   section: string | null
   display_name: string | null
@@ -43,6 +55,8 @@ interface Recipe {
   storage_days: number | null
   freezable: boolean | null
   storage_notes: string | null
+  parent_recipe_id: string | null
+  variant_label: string | null
   recipe_ingredients: Ing[]
   recipe_steps: Step[]
   recipe_tags: { tags: { name: string } | null }[]
@@ -69,6 +83,9 @@ export default function RecipeDetail() {
   const [urls, setUrls] = useState<Record<string, string>>({})
   const [uploading, setUploading] = useState<string | null>(null) // 'general' | id de paso
   const [viewer, setViewer] = useState<number | null>(null)
+  const [family, setFamily] = useState<FamilyRow[]>([]) // original y variantes
+  const [originalIngs, setOriginalIngs] = useState<OriginalIng[] | null>(null)
+  const [deleteDialog, setDeleteDialog] = useState(false)
 
   const load = useCallback(
     async (initial: boolean) => {
@@ -98,6 +115,44 @@ export default function RecipeDetail() {
   useEffect(() => {
     void load(true)
   }, [load])
+
+  const recipeId = recipe?.id
+  const parentId = recipe?.parent_recipe_id ?? null
+  useEffect(() => {
+    if (!recipeId) return
+    const rootId = parentId ?? recipeId
+    supabase
+      .from('recipes')
+      .select('id,title,variant_label,parent_recipe_id')
+      .or(`id.eq.${rootId},parent_recipe_id.eq.${rootId}`)
+      .order('created_at')
+      .then(({ data }) => setFamily((data ?? []) as FamilyRow[]))
+    setOriginalIngs(null)
+    if (parentId)
+      supabase
+        .from('recipe_ingredients')
+        .select('ingredient_id,quantity_min,quantity_max,unit,quantity_text,alt_quantity,alt_unit,ingredients(name)')
+        .eq('recipe_id', parentId)
+        .then(({ data }) => setOriginalIngs((data ?? []) as unknown as OriginalIng[]))
+  }, [recipeId, parentId])
+
+  // Diferencias de ingredientes frente a la receta original.
+  const diff = useMemo(() => {
+    if (!recipe || !recipe.parent_recipe_id || !originalIngs) return null
+    const key = (i: { ingredient_id: string | null }) => i.ingredient_id ?? ''
+    const orig = new Map(originalIngs.map((i) => [key(i), i]))
+    const cur = new Map(recipe.recipe_ingredients.map((i) => [key(i), i]))
+    const lines: { sym: '+' | '−' | '≠'; text: string }[] = []
+    for (const [k, c] of cur) {
+      const name = c.ingredients?.name ?? c.original_text ?? ''
+      const o = orig.get(k)
+      if (!o) lines.push({ sym: '+', text: `${[formatQuantity(c, 1)].filter(Boolean).join('')} ${name}`.trim() })
+      else if (formatQuantity(o, 1) !== formatQuantity(c, 1))
+        lines.push({ sym: '≠', text: `${name}: ${formatQuantity(o, 1) || 'sin cantidad'} → ${formatQuantity(c, 1) || 'sin cantidad'}` })
+    }
+    for (const [k, o] of orig) if (!cur.has(k)) lines.push({ sym: '−', text: o.ingredients?.name ?? '' })
+    return lines
+  }, [recipe, originalIngs])
 
   const general = useMemo(() => (recipe?.recipe_images ?? []).filter((i) => !i.step_id), [recipe])
   // El visor recorre todas las fotos en este orden: generales y luego las de los pasos.
@@ -135,13 +190,38 @@ export default function RecipeDetail() {
     await load(false)
   }
 
-  async function remove() {
-    if (!recipe || !confirm(`¿Eliminar «${recipe.title}»? No se puede deshacer.`)) return
+  const variants = family.filter((x) => x.parent_recipe_id === recipe?.id)
+
+  function remove() {
+    if (!recipe) return
+    if (variants.length > 0) return setDeleteDialog(true)
+    if (confirm(`¿Eliminar «${recipe.title}»? No se puede deshacer.`)) void doDelete(false)
+  }
+
+  // withVariants=false: las variantes pasan a ser recetas independientes. true: se borran con la original.
+  async function doDelete(withVariants: boolean) {
+    if (!recipe) return
+    setDeleteDialog(false)
     const paths = recipe.recipe_images.map((i) => i.storage_path)
+    if (withVariants && variants.length) {
+      const { data } = await supabase.from('recipe_images').select('storage_path').in('recipe_id', variants.map((v) => v.id))
+      paths.push(...(data ?? []).map((d) => d.storage_path as string))
+    } else if (variants.length) {
+      const up = await supabase.from('recipes').update({ parent_recipe_id: null, variant_label: null }).eq('parent_recipe_id', recipe.id)
+      if (up.error) return setError(up.error.message)
+    }
     const { error } = await supabase.from('recipes').delete().eq('id', recipe.id)
     if (error) return setError(error.message)
     if (paths.length) await supabase.storage.from('recipe-images').remove(paths)
     navigate('/')
+  }
+
+  async function makeIndependent() {
+    if (!recipe || !confirm('Esta receta dejará de ser una variante y pasará a ser una receta independiente.')) return
+    await act(async () => {
+      const { error } = await supabase.from('recipes').update({ parent_recipe_id: null, variant_label: null }).eq('id', recipe.id)
+      if (error) throw new Error(error.message)
+    })
   }
 
   if (!recipe) return error ? <p className="error">{error}</p> : <p className="center">Cargando…</p>
@@ -171,6 +251,45 @@ export default function RecipeDetail() {
         {recipe.recipe_tags.map((t) => t.tags && <span key={t.tags.name}>{t.tags.name}</span>)}
       </div>
       {error && <p className="error" role="alert">{error}</p>}
+
+      {(family.length > 1 || recipe.parent_recipe_id) && (
+        <section aria-label="Versiones" className="versions">
+          <h3>Versiones</h3>
+          <div className="chiprow">
+            {family.map((v) => (
+              <Link key={v.id} className="chip" to={`/receta/${v.id}`} aria-current={v.id === recipe.id ? 'page' : undefined} aria-pressed={v.id === recipe.id}>
+                {v.parent_recipe_id ? v.variant_label : 'Original'}
+              </Link>
+            ))}
+          </div>
+          {recipe.parent_recipe_id && (
+            <>
+              <p className="muted">
+                Variante de <Link to={`/receta/${recipe.parent_recipe_id}`}>{family.find((x) => x.id === recipe.parent_recipe_id)?.title ?? 'la original'}</Link>
+                {recipe.variant_label && <> · {recipe.variant_label}</>}
+              </p>
+              {diff && (
+                <>
+                  <h3>Qué cambia</h3>
+                  {diff.length === 0 ? (
+                    <p className="muted">Mismos ingredientes que la original (los pasos pueden variar).</p>
+                  ) : (
+                    <ul className="diff">
+                      {diff.map((l, k) => (
+                        <li key={k}><b aria-label={l.sym === '+' ? 'añade' : l.sym === '−' ? 'quita' : 'cambia'}>{l.sym}</b> {l.text}</li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              )}
+              <button type="button" className="link" onClick={makeIndependent}>Hacer receta independiente</button>
+            </>
+          )}
+        </section>
+      )}
+      {!recipe.parent_recipe_id && (
+        <Link className="linkbtn alt" to={`/receta/${recipe.id}/variante`}>+ Crear variante</Link>
+      )}
 
       <section aria-label="Fotos">
         {general.length > 0 && (
@@ -269,6 +388,19 @@ export default function RecipeDetail() {
       <button className="danger" onClick={remove}>
         Eliminar receta
       </button>
+
+      {deleteDialog && (
+        <div className="sheet-wrap" onClick={() => setDeleteDialog(false)}>
+          <div className="dialog" role="alertdialog" aria-labelledby="dlg-t" onClick={(e) => e.stopPropagation()}>
+            <h2 id="dlg-t">Esta receta tiene {variants.length} {variants.length === 1 ? 'variante' : 'variantes'}</h2>
+            <p>¿Qué hacemos con {variants.length === 1 ? 'ella' : 'ellas'}?</p>
+            <button type="button" onClick={() => doDelete(false)}>Eliminar solo la original</button>
+            <p className="muted">Las variantes se conservan como recetas independientes.</p>
+            <button type="button" className="danger" onClick={() => doDelete(true)}>Eliminar la original y sus variantes</button>
+            <button type="button" className="alt" onClick={() => setDeleteDialog(false)}>Cancelar</button>
+          </div>
+        </div>
+      )}
 
       {viewer !== null && allImages.length > 0 && (
         <PhotoViewer

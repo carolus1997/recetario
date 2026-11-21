@@ -19,13 +19,14 @@ interface Props {
   recipe: CardRecipe
   favorite: boolean
   coverUrl?: string
+  compact?: boolean
   onToggleFavorite: (id: string) => void
 }
 
-export default function RecipeCard({ recipe, favorite, coverUrl, onToggleFavorite }: Props) {
+export default function RecipeCard({ recipe, favorite, coverUrl, compact, onToggleFavorite }: Props) {
   const total = (recipe.prep_minutes ?? 0) + (recipe.cook_minutes ?? 0)
   return (
-    <article className="card">
+    <article className={compact ? 'card compact' : 'card'}>
       {recipe.parent_recipe_id && <span className="ribbon">Variante</span>}
       <div className="pic">
         {coverUrl ? (

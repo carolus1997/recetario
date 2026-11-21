@@ -39,6 +39,7 @@ export interface FormState {
   storageDays: string
   freezable: '' | 'si' | 'no'
   storageNotes: string
+  variantLabel: string // solo si la receta es una variante
 }
 
 export const newKey = () => crypto.randomUUID()
@@ -49,7 +50,7 @@ export const emptyStep = (): FormStep => ({ key: newKey(), section: '', text: ''
 export const emptyForm = (): FormState => ({
   title: '', description: '', servings: 4, prep: '', cook: '', difficulty: '',
   groups: [{ key: newKey(), section: '', items: [emptyIngredient()] }],
-  steps: [emptyStep()], tags: [], appliances: [], storageDays: '', freezable: '', storageNotes: '',
+  steps: [emptyStep()], tags: [], appliances: [], storageDays: '', freezable: '', storageNotes: '', variantLabel: '',
 })
 
 // "2", "0,5", "1/2", "1 1/2", "2-3" -> números; cualquier otra cosa ("al gusto") se guarda como texto.
@@ -87,6 +88,7 @@ export interface SaveContext {
   householdId: string
   userId: string
   editing?: { id: string; version: number; snapshot: unknown }
+  parentId?: string | null // receta original, si esta receta es (o va a ser) una variante
 }
 
 export async function saveRecipe(f: FormState, ctx: SaveContext): Promise<string> {
@@ -103,6 +105,7 @@ export async function saveRecipe(f: FormState, ctx: SaveContext): Promise<string
     storage_days: toInt(f.storageDays),
     freezable: f.freezable === 'si' ? true : f.freezable === 'no' ? false : null,
     storage_notes: f.storageNotes.trim() || null,
+    variant_label: ctx.parentId ? f.variantLabel.trim() : null,
   }
 
   let recipeId: string
@@ -127,7 +130,7 @@ export async function saveRecipe(f: FormState, ctx: SaveContext): Promise<string
   } else {
     const { data, error } = await supabase
       .from('recipes')
-      .insert({ ...fields, household_id: ctx.householdId, created_by: ctx.userId })
+      .insert({ ...fields, household_id: ctx.householdId, created_by: ctx.userId, parent_recipe_id: ctx.parentId ?? null })
       .select('id')
       .single()
     if (error) throw new Error(error.message)
@@ -197,7 +200,8 @@ export async function saveRecipe(f: FormState, ctx: SaveContext): Promise<string
         timer_min_seconds: mn != null ? mn * 60 : null,
         timer_max_seconds: mx != null ? mx * 60 : null,
       }
-      const r = s.id
+      // Al crear (también una variante copiada de otra receta) siempre se inserta: nunca se actualizan pasos ajenos.
+      const r = !creating && s.id
         ? await supabase.from('recipe_steps').update(row).eq('id', s.id)
         : await supabase.from('recipe_steps').insert({ ...row, recipe_id: recipeId })
       if (r.error) throw new Error(r.error.message)

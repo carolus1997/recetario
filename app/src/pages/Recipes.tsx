@@ -110,6 +110,19 @@ export default function Recipes() {
     })
   }, [rows, q, filter, favs])
 
+  // Las variantes se muestran bajo su original; si la original no pasa el filtro, la variante sale suelta.
+  const { topLevel, children } = useMemo(() => {
+    const ids = new Set(visible.map((r) => r.id))
+    const children = new Map<string, CardRecipe[]>()
+    const topLevel: CardRecipe[] = []
+    for (const r of visible) {
+      if (r.parent_recipe_id && ids.has(r.parent_recipe_id)) {
+        children.set(r.parent_recipe_id, [...(children.get(r.parent_recipe_id) ?? []), r])
+      } else topLevel.push(r)
+    }
+    return { topLevel, children }
+  }, [visible])
+
   if (error) return <p className="error">{error}</p>
   if (!rows) return <p className="center">Cargando…</p>
 
@@ -153,9 +166,16 @@ export default function Recipes() {
       )}
       {rows.length > 0 && visible.length === 0 && <p className="center">Ninguna receta coincide.</p>}
       <ul className="cards">
-        {visible.map((r) => (
+        {topLevel.map((r) => (
           <li key={r.id}>
             <RecipeCard recipe={r} favorite={favs.has(r.id)} coverUrl={covers[r.id]} onToggleFavorite={toggleFavorite} />
+            {(children.get(r.id) ?? []).length > 0 && (
+              <div className="variants" aria-label={`Variantes de ${r.title}`}>
+                {children.get(r.id)!.map((v) => (
+                  <RecipeCard key={v.id} compact recipe={v} favorite={favs.has(v.id)} coverUrl={covers[v.id]} onToggleFavorite={toggleFavorite} />
+                ))}
+              </div>
+            )}
           </li>
         ))}
       </ul>

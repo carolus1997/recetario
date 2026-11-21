@@ -33,6 +33,7 @@ export default function App() {
           <Route path="/receta/:id" element={<RecipeDetail />} />
           <Route path="/receta/:id/editar" element={<RecipeForm />} />
           <Route path="/receta/:id/cocinar" element={<CookMode />} />
+          <Route path="/receta/:id/variante" element={<RecipeForm mode="variant" />} />
           <Route path="/importar" element={<ImportPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -26,6 +26,8 @@ interface LoadedRecipe {
   storage_days: number | null
   freezable: boolean | null
   storage_notes: string | null
+  parent_recipe_id: string | null
+  variant_label: string | null
   recipe_ingredients: {
     position: number
     section: string | null
@@ -97,6 +99,7 @@ function toForm(r: LoadedRecipe): FormState {
     storageDays: r.storage_days?.toString() ?? '',
     freezable: r.freezable === true ? 'si' : r.freezable === false ? 'no' : '',
     storageNotes: r.storage_notes ?? '',
+    variantLabel: r.variant_label ?? '',
   }
 }
 
@@ -108,12 +111,15 @@ function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; chi
   )
 }
 
-export default function RecipeForm() {
+// mode "variant": el formulario parte de una copia de la receta `id` y crea una receta nueva enlazada a ella.
+export default function RecipeForm({ mode = 'edit' }: { mode?: 'edit' | 'variant' }) {
   const { id } = useParams()
+  const variantMode = mode === 'variant'
   const navigate = useNavigate()
   const { session, householdId } = useAuth()
   const [f, setF] = useState<FormState>(emptyForm)
   const [loaded, setLoaded] = useState<LoadedRecipe | null>(null)
+  const [source, setSource] = useState<LoadedRecipe | null>(null) // receta original (modo variante)
   const [loading, setLoading] = useState(!!id)
   const [units, setUnits] = useState<UnitRow[]>([])
   const [ingNames, setIngNames] = useState<string[]>([])
@@ -121,6 +127,7 @@ export default function RecipeForm() {
   const [newTag, setNewTag] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const parentId = variantMode ? (source?.id ?? null) : (loaded?.parent_recipe_id ?? null)
 
   useEffect(() => {
     supabase.from('units').select('code').order('code').then(({ data }) => setUnits((data ?? []) as UnitRow[]))
@@ -142,8 +149,16 @@ export default function RecipeForm() {
         if (error) setError(error.message)
         else {
           const r = data as unknown as LoadedRecipe
-          setLoaded(r)
-          setF(toForm(r))
+          if (variantMode) {
+            if (r.parent_recipe_id) setError('Una variante no puede tener otras variantes. Crea la variante desde la receta original.')
+            // Copia sin ids de pasos y sin etiqueta: se guardará como receta nueva.
+            const copy = toForm(r)
+            setSource(r)
+            setF({ ...copy, variantLabel: '', steps: copy.steps.map((s) => ({ ...s, id: undefined })) })
+          } else {
+            setLoaded(r)
+            setF(toForm(r))
+          }
         }
         setLoading(false)
       })
@@ -166,6 +181,8 @@ export default function RecipeForm() {
   async function submit(e: FormEvent) {
     e.preventDefault()
     if (!f.title.trim()) return setError('Ponle un nombre a la receta.')
+    if (parentId && !f.variantLabel.trim()) return setError('Describe en qué se diferencia esta variante.')
+    if (variantMode && source?.parent_recipe_id) return setError('Una variante no puede tener otras variantes.')
     if (!f.groups.some((g) => g.items.some((i) => i.ingredient.trim()))) return setError('Añade al menos un ingrediente.')
     if (!f.steps.some((s) => s.text.trim())) return setError('Añade al menos un paso.')
     setBusy(true)
@@ -175,6 +192,7 @@ export default function RecipeForm() {
         householdId: householdId!,
         userId: session!.user.id,
         editing: loaded ? { id: loaded.id, version: loaded.version, snapshot: loaded } : undefined,
+        parentId,
       })
       navigate(`/receta/${rid}`)
     } catch (err) {
@@ -190,7 +208,16 @@ export default function RecipeForm() {
   return (
     <form className="recipe-form" onSubmit={submit} noValidate>
       <Link to={id ? `/receta/${id}` : '/'}>← Cancelar</Link>
-      <h1>{id ? 'Editar receta' : 'Nueva receta'}</h1>
+      <h1>{variantMode ? 'Nueva variante' : id ? 'Editar receta' : 'Nueva receta'}</h1>
+      {variantMode && source && (
+        <p className="muted">Parte de una copia de «{source.title}». Cambia lo que haga falta: la original no se modifica.</p>
+      )}
+      {parentId && (
+        <label className="field">
+          En qué se diferencia
+          <input value={f.variantLabel} placeholder="Ej.: Con zanahoria, miel y soja" onChange={(e) => set('variantLabel', e.target.value)} />
+        </label>
+      )}
 
       <label className="field">
         Nombre
