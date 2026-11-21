@@ -7,6 +7,7 @@ import Recipes from './pages/Recipes'
 import RecipeDetail from './pages/RecipeDetail'
 import RecipeForm from './pages/RecipeForm'
 import CookMode from './pages/CookMode'
+import Settings from './pages/Settings'
 import ImportPage from './pages/Import'
 
 export default function App() {
@@ -22,9 +23,12 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <strong>Recetario</strong>
-        <button className="link" onClick={() => supabase.auth.signOut()}>
-          Salir
-        </button>
+        <span>
+          <NavLink className="link" to="/ajustes">Ajustes</NavLink>
+          <button className="link" onClick={() => supabase.auth.signOut()}>
+            Salir
+          </button>
+        </span>
       </header>
       <main>
         <Routes>
@@ -36,6 +40,7 @@ export default function App() {
           <Route path="/receta/:id/cocinar" element={<CookMode />} />
           <Route path="/receta/:id/variante" element={<RecipeForm mode="variant" />} />
           <Route path="/importar" element={<ImportPage />} />
+          <Route path="/ajustes" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

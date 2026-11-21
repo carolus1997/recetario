@@ -130,6 +130,8 @@ button.add { background: transparent; color: var(--olive-d); border-style: dashe
 .linkbtn.alt { background: var(--paper-2); color: var(--ink); }
 .pagehead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 
+a.link { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 8px; color: var(--clay); }
+
 /* Filtros y favoritas */
 .searchrow { display: flex; align-items: flex-end; gap: 10px; }
 .searchrow .searchbox { flex: 1; }
