@@ -164,6 +164,9 @@ export default function RecipeDetail() {
         <Link className="linkbtn alt" to={`/receta/${recipe.id}/editar`}>Editar</Link>
       </div>
       {meta.length > 0 && <p className="muted">{meta.join(' · ')}</p>}
+      {recipe.recipe_steps.length > 0 && (
+        <Link className="linkbtn" to={`/receta/${recipe.id}/cocinar`}>Cocinar paso a paso</Link>
+      )}
       <div className="chips">
         {recipe.recipe_tags.map((t) => t.tags && <span key={t.tags.name}>{t.tags.name}</span>)}
       </div>

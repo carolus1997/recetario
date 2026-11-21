@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Recipes from './pages/Recipes'
 import RecipeDetail from './pages/RecipeDetail'
 import RecipeForm from './pages/RecipeForm'
+import CookMode from './pages/CookMode'
 import ImportPage from './pages/Import'
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/nueva" element={<RecipeForm />} />
           <Route path="/receta/:id" element={<RecipeDetail />} />
           <Route path="/receta/:id/editar" element={<RecipeForm />} />
+          <Route path="/receta/:id/cocinar" element={<CookMode />} />
           <Route path="/importar" element={<ImportPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

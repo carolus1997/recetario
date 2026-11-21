@@ -130,6 +130,41 @@ button.add { background: transparent; color: var(--olive-d); border-style: dashe
 .linkbtn.alt { background: var(--paper-2); color: var(--ink); }
 .pagehead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 
+/* Modo cocina */
+.cook { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--paper); overflow: hidden; }
+.cook::after { content: ''; position: absolute; inset: 0; background: var(--grain); opacity: .18; pointer-events: none; mix-blend-mode: multiply; }
+.cook-top { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; }
+.cook-top strong { font: 400 1.2rem var(--f-title); color: var(--olive-d); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cook-body { position: relative; z-index: 1; flex: 1; overflow-y: auto; padding: 8px 20px 20px; max-width: 720px; width: 100%; margin: 0 auto; }
+.cook-head { display: flex; align-items: center; gap: 14px; }
+.bigno { flex: none; width: 64px; height: 64px; display: grid; place-items: center; border: 3px solid var(--ink); border-radius: var(--round); font: 400 2.2rem var(--f-title); }
+.dots { display: flex; gap: 6px; margin-top: 12px; }
+.dots i { width: 100%; height: 6px; border-radius: 6px; background: rgba(43, 42, 51, .15); }
+.dots i.on { background: var(--clay); }
+.cook-step { font: 400 1.6rem / 1.25 var(--f-hand); margin: 18px 0 10px; }
+.cook-pics { display: flex; gap: 8px; margin: 8px 0; }
+.cook-pics img { height: 110px; border-radius: 14px; border: 2px solid var(--ink); object-fit: cover; }
+.timer { display: flex; align-items: center; gap: 16px; margin: 18px 0; }
+.ring-t { font: 400 1.9rem var(--f-title); fill: var(--ink); }
+.timer-btns { display: grid; gap: 8px; }
+.cook-foot { position: relative; z-index: 1; display: flex; gap: 10px; padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); border-top: 2px dashed var(--ink); background: var(--paper); }
+.cook-foot button { flex: 1; min-height: 64px; font-size: 1.35rem; }
+.cook-foot button:last-child { flex: 2; }
+button.alt { background: var(--paper-2); color: var(--ink); }
+.pills { position: relative; z-index: 1; display: flex; gap: 8px; overflow-x: auto; padding: 0 14px 6px; }
+.pill { flex: none; background: var(--olive); border-color: var(--olive-d); }
+.pill.done { background: var(--tomato); }
+.alarm { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 0 14px 8px;
+  padding: 8px 14px; background: var(--sticky); border: 2px solid var(--ink); border-radius: 14px; font: 400 1.3rem var(--f-title); }
+.sticky { position: relative; margin: 22px 6px 12px 10px; padding: 16px; background: var(--sticky); transform: rotate(-1.4deg);
+  box-shadow: 3px 5px 0 rgba(43, 42, 51, .15); border-radius: 3px 3px 18px 3px; }
+.sticky h3 { margin: 0 0 2px; }
+.sticky p { margin: 0; }
+.sheet-wrap { position: absolute; inset: 0; z-index: 5; background: rgba(0, 0, 0, .35); display: flex; align-items: flex-end; }
+.sheet { width: 100%; max-height: 80%; overflow-y: auto; background: var(--paper); border: 2px solid var(--ink); border-bottom: 0;
+  border-radius: 28px 24px 0 0; padding: 8px 18px 20px; }
+.sheet h2 { margin-top: 8px; }
+
 /* Fotos */
 .cover { display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; margin: 12px 0 8px; overflow: hidden; background: var(--paper-2);
   border: 2px solid var(--ink); border-radius: 22px 16px 24px 16px / 16px 24px 16px 22px; box-shadow: 4px 5px 0 rgba(43, 42, 51, .14); }
